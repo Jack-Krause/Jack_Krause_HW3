@@ -31,6 +31,7 @@ public class StoutList<E extends Comparable<? super E>> extends AbstractSequenti
    * linked list a private instance variable.  
    */
   public Node head;
+  //test
   
   /**
    * Dummy node for tail.
