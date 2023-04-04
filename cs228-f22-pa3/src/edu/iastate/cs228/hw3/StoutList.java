@@ -86,8 +86,7 @@ public class StoutList<E extends Comparable<? super E>> extends AbstractSequenti
   @Override
   public int size()
   {
-    // TODO Auto-generated method stub
-    return 0;
+    return size;
   }
   
   @Override
@@ -360,7 +359,30 @@ public class StoutList<E extends Comparable<? super E>> extends AbstractSequenti
     // other operations, for instance, addition, access to the previous element, etc.
     // 
     // ...
-    // 
+    //
+
+      /**
+       * Inserts newNode into the list, doesn't update the size.
+       * @param current -
+       * @param newNode -
+       */
+    public void link(Node current, Node newNode) {
+        if (current != null && newNode != null) {
+            newNode.previous = current;
+            newNode.next = current.next;
+            current.next.previous = newNode;
+            current.next = newNode;
+        }
+    }
+
+      /**
+       * removes current from the list without updating the size.
+       * @param current
+       */
+    public void unlink(Node current) {
+        current.previous.next = current.next;
+        current.next.previous = current.previous;
+    }
   }
   
 
