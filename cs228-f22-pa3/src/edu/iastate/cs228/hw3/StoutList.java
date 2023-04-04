@@ -22,6 +22,11 @@ public class StoutList<E extends Comparable<? super E>> extends AbstractSequenti
         s.add("c");
         s.add("d");
 
+        StoutList.NodeInfo n = s.find(3);
+        StoutList.Node tempNode = n.node;
+        tempNode.addItem("r");
+
+
         System.out.println(s.toStringInternal());
     }
 
@@ -99,6 +104,7 @@ public class StoutList<E extends Comparable<? super E>> extends AbstractSequenti
   {
     return size;
   }
+
     /**
      * Inserts newNode into the list, doesn't update the size.
      * @param current -
@@ -112,6 +118,7 @@ public class StoutList<E extends Comparable<? super E>> extends AbstractSequenti
             current.next = newNode;
         }
     }
+
 
     /**
      * removes current from the list without updating the size.
@@ -168,11 +175,10 @@ public class StoutList<E extends Comparable<? super E>> extends AbstractSequenti
 
   @Override
   public E remove(int pos) {
-//        Node temp = findNodeByIndex(pos);
-//        unlink(temp);
-//        return temp.
-//        size--;
-      return null;
+        Node temp = findNodeByIndex(pos);
+        unlink(temp);
+        size--;
+        return temp.data[0];
   }
 
   /**
@@ -335,7 +341,7 @@ public class StoutList<E extends Comparable<? super E>> extends AbstractSequenti
       }
       data[count++] = item;
       //useful for debugging
-      //      System.out.println("Added " + item.toString() + " at index " + count + " to node "  + Arrays.toString(data));
+//            System.out.println("Added " + item.toString() + " at index " + count + " to node "  + Arrays.toString(data));
     }
   
     /**
@@ -564,6 +570,37 @@ public class StoutList<E extends Comparable<? super E>> extends AbstractSequenti
   {
 	  // TODO
   }
- 
+
+    private class NodeInfo {
+        public Node node;
+        public int offset;
+
+        public NodeInfo(Node node, int offset) {
+            this.node = node;
+            this.offset = offset;
+        }
+    }
+
+    public NodeInfo find(int pos) {
+        if (pos > (size*nodeSize)) {
+            throw new IndexOutOfBoundsException();
+        }
+        Node current = head.next;
+        if (pos < current.count) {
+            return new NodeInfo(current, pos);
+        }
+        int counter = current.count;
+        while (counter <= pos && current.next != tail) {
+            current = current.next;
+            counter += current.count;
+            if (counter > pos) {
+                return new NodeInfo(current, counter-pos);
+            }
+
+        }
+        return null;
+    }
+
+
 
 }
