@@ -26,8 +26,16 @@ public class StoutList<E extends Comparable<? super E>> extends AbstractSequenti
         StoutList.Node tempNode = n.node;
         tempNode.addItem("r");
 
+        n = s.find(0);
+        tempNode = n.node;
+        tempNode.addItem("x");
+        tempNode.addItem("y");
+        tempNode.addItem("z");
 
-        System.out.println(s.toStringInternal());
+        ListIterator<String> iter = s.listIterator();
+        System.out.println(s.toStringInternal(iter));
+        iter.next();
+        System.out.println(s.toStringInternal(iter));
     }
 
 
@@ -208,24 +216,18 @@ public class StoutList<E extends Comparable<? super E>> extends AbstractSequenti
   }
   
   @Override
-  public Iterator<E> iterator()
-  {
-    // TODO Auto-generated method stub
-    return null;
+  public Iterator<E> iterator() {
+      return new StoutListIterator();
   }
 
   @Override
-  public ListIterator<E> listIterator()
-  {
-    // TODO Auto-generated method stub
-    return null;
+  public ListIterator<E> listIterator() {
+      return new StoutListIterator();
   }
 
   @Override
-  public ListIterator<E> listIterator(int index)
-  {
-    // TODO Auto-generated method stub
-    return null;
+  public ListIterator<E> listIterator(int index) {
+      return new StoutListIterator(index);
   }
   
   /**
@@ -389,16 +391,20 @@ public class StoutList<E extends Comparable<? super E>> extends AbstractSequenti
   private class StoutListIterator implements ListIterator<E>
   {
 	// constants you possibly use ...   
-	  
-	// instance variables ... 
+	  private static final int BEHIND = -1;
+      private static final int AHEAD = 1;
+      private static final int NONE = 0;
+	// instance variables ...
+      private Node cursor;
+      private int index;
+      private int direction;
 	  
     /**
      * Default constructor 
      */
     public StoutListIterator()
     {
-    	// TODO
-
+    	this(0);
     }
 
     /**
@@ -407,21 +413,32 @@ public class StoutList<E extends Comparable<? super E>> extends AbstractSequenti
      */
     public StoutListIterator(int pos)
     {
-    	// TODO 
+    	if (pos < 0 || pos > (size * nodeSize)) {
+            throw new IndexOutOfBoundsException("" + pos);
+        }
+        cursor = find(pos).node;
+//        cursor = find(pos).node;
+        index = pos;
+        direction = NONE;
     }
 
     @Override
     public boolean hasNext()
     {
-    	// TODO
-        return false;
+    	return index < (size * nodeSize);
     }
 
     @Override
     public E next()
     {
-    	// TODO
-       return null;
+    	if (!hasNext()) {
+            throw new NoSuchElementException();
+        }
+        E ret = cursor.data[index];
+        index++;
+//        cursor = cursor.next;
+        direction = BEHIND;
+        return ret;
     }
 
       /**
@@ -466,7 +483,7 @@ public class StoutList<E extends Comparable<? super E>> extends AbstractSequenti
        */
       @Override
       public int nextIndex() {
-          return 0;
+          return index;
       }
 
       /**
@@ -480,7 +497,7 @@ public class StoutList<E extends Comparable<? super E>> extends AbstractSequenti
        */
       @Override
       public int previousIndex() {
-          return 0;
+          return index-1;
       }
 
       @Override
