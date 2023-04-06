@@ -1,11 +1,16 @@
 package edu.iastate.cs228.hw3;
 
+import org.junit.Before;
+import org.junit.Test;
+
 import java.util.AbstractSequentialList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
+
+import static org.junit.Assert.assertTrue;
 
 /**
  * Implementation of the list interface based on linked nodes
@@ -15,27 +20,46 @@ import java.util.NoSuchElementException;
  */
 public class StoutList<E extends Comparable<? super E>> extends AbstractSequentialList<E>
 {
+
     public static void main(String[] args) {
-        StoutList<String> s = new StoutList();
-        s.add("a");
-        s.add("b");
-        s.add("c");
-        s.add("d");
-
-        StoutList.NodeInfo n = s.find(3);
-        StoutList.Node tempNode = n.node;
-        tempNode.addItem("r");
-
-        n = s.find(0);
-        tempNode = n.node;
-        tempNode.addItem("x");
-        tempNode.addItem("y");
-        tempNode.addItem("z");
-
-        ListIterator<String> iter = s.listIterator();
-        System.out.println(s.toStringInternal(iter));
-        iter.next();
-        System.out.println(s.toStringInternal(iter));
+            StoutList<Integer> s = new StoutList<Integer>();
+            s.add(0);
+            s.add(4);
+            s.add(8);
+            s.add(12);
+            StoutList<Integer>.Node nOne = s.find(0).node;
+            nOne.addItem(1);
+            nOne.addItem(2);
+            nOne.addItem(3);
+            StoutList<Integer>.Node nTwo = s.find(4).node;
+            nTwo.addItem(5);
+            nTwo.addItem(6);
+            nTwo.addItem(7);
+            StoutList<Integer>.Node nThree = s.find(8).node;
+            nThree.addItem(9);
+            nThree.addItem(10);
+            nThree.addItem(11);
+            StoutList<Integer>.Node nFour = s.find(12).node;
+            nFour.addItem(13);
+            nFour.addItem(14);
+            nFour.addItem(15);
+            System.out.println(s.toStringInternal());
+            System.out.println(s.contains(0));
+            System.out.println(s.contains(1));
+            System.out.println(s.contains(2));
+            System.out.println(s.contains(3));
+            System.out.println(s.contains(4));
+            System.out.println(s.contains(5));
+            System.out.println(s.contains(6));
+            System.out.println(s.contains(7));
+            System.out.println(s.contains(8));
+            System.out.println(s.contains(9));
+            System.out.println(s.contains(10));
+            System.out.println(s.contains(11));
+            System.out.println(s.contains(12));
+            System.out.println(s.contains(13));
+            System.out.println(s.contains(14));
+            System.out.println(s.contains(15));
     }
 
 
@@ -423,9 +447,11 @@ public class StoutList<E extends Comparable<? super E>> extends AbstractSequenti
     }
 
     @Override
-    public boolean hasNext()
-    {
-    	return index < (size * nodeSize);
+    public boolean hasNext() {
+        if (find(index) != null) {
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -434,11 +460,10 @@ public class StoutList<E extends Comparable<? super E>> extends AbstractSequenti
     	if (!hasNext()) {
             throw new NoSuchElementException();
         }
-        E ret = cursor.data[index];
+        NodeInfo temp = find(index);
         index++;
-//        cursor = cursor.next;
         direction = BEHIND;
-        return ret;
+        return temp.node.data[temp.offset];
     }
 
       /**
@@ -611,7 +636,7 @@ public class StoutList<E extends Comparable<? super E>> extends AbstractSequenti
             current = current.next;
             counter += current.count;
             if (counter > pos) {
-                return new NodeInfo(current, counter-pos);
+                return new NodeInfo(current, counter-pos-1);
             }
 
         }
